@@ -2,7 +2,7 @@
 
 A simple audio recording and playback application for the **Arduino VENTUNO Q**, built with **Arduino App Lab**.
 
-The application runs entirely on the **Linux MPU**: **no MCU sketch, RouterBridge communication, or Modulino module is required**.
+The application runs entirely on the **Linux MPU**.
 
 It demonstrates how to combine an App Lab **custom Python brick**, a small ALSA-backed audio service, and a browser-based **WebUI**.
 
