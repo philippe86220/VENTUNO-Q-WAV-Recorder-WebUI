@@ -1,4 +1,4 @@
-# VENTUNO Q — WAV Recorder & Player with WebUI
+# 🎙️ VENTUNO Q — WAV Recorder & Player with WebUI
 
 A simple audio recording and playback application for the **Arduino VENTUNO Q**, built with **Arduino App Lab**.
 
@@ -24,7 +24,7 @@ It demonstrates how to combine an App Lab **custom Python brick**, a small ALSA-
 - Operating system: **Ubuntu 24.04 LTS** on the VENTUNO Q
 - Application environment: **Arduino App Lab**
 - Audio backend: **ALSA**, using `arecord`, `aplay`, and `amixer`
-- Application type: **MPU-only** (Python + WebUI + custom brick)
+- Application type: **Python + WebUI + custom brick**
 
 The audio device identifiers below match the author's tested configuration. They may need adjustment on other systems or after changes to the ALSA device order.
 
@@ -136,7 +136,26 @@ These endpoints are intended for the local App Lab WebUI. The current implementa
 
 ## Notes
 
-This is an educational App Lab project focused on integrating a custom brick with Linux audio services and a WebUI. 
+This is an educational App Lab project focused on integrating a custom brick with Linux audio services and a WebUI.
+
+## Planned evolution
+
+The next development stage is to add **physical controls** using **Arduino Modulino Buttons** connected to the VENTUNO Q's **STM32 MCU**.
+
+Planned work includes:
+
+- Start and stop WAV recording using Modulino buttons.
+- Trigger playback from a physical button.
+- Use **Arduino RouterBridge** for communication between the MCU and the Linux MPU.
+- Explore button LED feedback for recording and playback states.
+
+These are **planned features**, not part of the current release. The current WebUI will remain useful for operating the recorder independently.
+
+## Development and acknowledgments
+
+This project was developed and tested on the **Arduino VENTUNO Q** by its author, with assistance from **ChatGPT (OpenAI)** for technical discussions, troubleshooting, code review, and documentation.
+
+The application has been validated through hands-on testing on the board. ChatGPT's suggestions do not replace testing on the actual hardware.
 
 ## License
 
