@@ -112,6 +112,7 @@ Audio service (wav_service.py)
       +--> amixer  --> Headphone volume
 ```
 
+The audio player runs as a dedicated Docker service, communicating with the main application over HTTP on port 9000.
 The WebUI communicates with Python endpoints exposed through App Lab. The custom brick forwards requests to a separate audio service, which manages the ALSA command-line tools.
 
 ### WebUI endpoints
@@ -132,7 +133,6 @@ These endpoints are intended for the local App Lab WebUI. The current implementa
 - Only one recording file is managed; starting a new recording overwrites it.
 - The application does not include a recording library or download button.
 - Audio device names and mixer settings are currently configured in source code.
-- The player service starts an HTTP server bound to `0.0.0.0:9000` inside its container; it is intended for the local application environment, not as a hardened public-facing service.
 
 ## Notes
 
