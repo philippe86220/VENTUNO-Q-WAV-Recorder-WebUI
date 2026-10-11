@@ -133,7 +133,6 @@ These endpoints are intended for the local App Lab WebUI. The current implementa
 - The application does not include a recording library or download button.
 - Audio device names and mixer settings are currently configured in source code.
 - The player service starts an HTTP server bound to `0.0.0.0:9000` inside its container; it is intended for the local application environment, not as a hardened public-facing service.
-- The project does **not** use the VENTUNO Q MCU, Arduino RouterBridge, or Modulino Buttons.
 
 ## Notes
 
