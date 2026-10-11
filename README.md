@@ -136,7 +136,7 @@ These endpoints are intended for the local App Lab WebUI. The current implementa
 
 ## Notes
 
-This is an educational App Lab project focused on integrating a custom brick with Linux audio services and a WebUI. It is separate from the author's MCU/Modulino-based experiments.
+This is an educational App Lab project focused on integrating a custom brick with Linux audio services and a WebUI. 
 
 ## License
 
