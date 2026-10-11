@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VENTUNO Q Enregistreur WAV</title>
+<style>
+body { font-family: Arial; text-align: center; margin-top: 40px; }
+button { font-size: 18px; margin: 10px; padding: 12px 24px; }
+#status { margin-top: 20px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>Enregistreur WAV VENTUNO Q</h1>
+
+<button onclick="startRecord()">Enregistrer</button>
+<button onclick="stopRecord()">Arrêter l'enregistrement</button>
+<button onclick="playWav()">Lire</button>
+<button onclick="stopAll()">Stop</button>
+
+<div class="volume-box">
+    <label for="volumeSlider">Volume : <span id="volumeValue">16</span>/31</label>
+    <input
+        type="range"
+        id="volumeSlider"
+        min="0"
+        max="31"
+        value="16"
+        step="1"
+    >
+</div>
+
+<div id="status">Etat : inconnu</div>
+
+<script>
+
+const volumeSlider = document.getElementById("volumeSlider");
+const volumeValue = document.getElementById("volumeValue");
+const statusBox = document.getElementById("status");
+
+let volumeTimer = null;
+
+async function getJSON(url) {
+    const r = await fetch(url);
+    return await r.json();
+}
+
+async function setVolume(value) {
+    try {
+        const data = await getJSON(`/api/volume?value=${value}`);
+
+        if (data.ok) {
+            volumeSlider.value = data.volume;
+            volumeValue.textContent = data.volume;
+        }
+    } catch (error) {
+        console.error("Erreur volume :", error);
+    }
+}
+
+volumeSlider.addEventListener("input", () => {
+    const value = volumeSlider.value;
+    volumeValue.textContent = value;
+
+    clearTimeout(volumeTimer);
+
+    volumeTimer = setTimeout(() => {
+        setVolume(value);
+    }, 150);
+});
+
+function showMode(mode, hasRecording) {
+    if (mode === "recording") {
+        statusBox.textContent = "Etat : enregistrement en cours...";
+    } else if (mode === "playing") {
+        statusBox.textContent = "Etat : lecture en cours...";
+    } else if (hasRecording) {
+        statusBox.textContent = "Etat : arrêté (enregistrement disponible)";
+    } else {
+        statusBox.textContent = "Etat : arrêté (aucun enregistrement)";
+    }
+}
+
+async function refreshStatus() {
+    try {
+        const data = await getJSON("/api/status");
+
+        if (data.ok) {
+            showMode(data.mode, data.has_recording);
+
+            volumeSlider.value = data.volume;
+            volumeValue.textContent = data.volume;
+
+        } else {
+            statusBox.textContent = "Etat : service indisponible";
+        }
+    } catch (error) {
+        statusBox.textContent = "Etat : service indisponible";
+    }
+}
+  
+async function startRecord() {
+    const data = await getJSON("/api/record");
+    if (!data.ok) statusBox.textContent = "Erreur : impossible d'enregistrer";
+    else refreshStatus();
+}
+
+async function stopRecord() {
+    const data = await getJSON("/api/stop_record");
+    if (!data.ok) statusBox.textContent = "Erreur : pas d'enregistrement en cours";
+    else refreshStatus();
+}
+
+async function playWav() {
+    const data = await getJSON("/api/play");
+    if (!data.ok) statusBox.textContent = "Erreur : aucun enregistrement à lire";
+    else refreshStatus();
+}
+
+async function stopAll() {
+    await getJSON("/api/stop");
+    refreshStatus();
+}
+
+// Met l'état à jour régulièrement (la lecture se termine d'elle-même)
+refreshStatus();
+setInterval(refreshStatus, 1500);
+
+</script>
+
+</body>
+</html>

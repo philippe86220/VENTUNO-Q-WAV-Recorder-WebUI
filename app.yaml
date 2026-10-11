@@ -1,0 +1,7 @@
+name: ventuno-Q-wav-brick-WebUI
+description: This project explores advanced custom brick capabilities in Arduino App Lab 0.7.0 on the UNO Q platform.
+ports: []
+bricks:
+- arduino:web_ui: {}
+- wavrecordplay: {}
+icon: 🧱

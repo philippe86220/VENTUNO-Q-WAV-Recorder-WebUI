@@ -1,0 +1,18 @@
+services:
+  player:
+    image: debian:bookworm-slim
+    user: root
+
+    devices:
+      - /dev/snd
+
+    volumes:
+      - .:/wavrecordplay
+
+    command: >
+      sh -c "
+      apt update &&
+      apt install -y python3 alsa-utils &&
+      exec python3 /wavrecordplay/wav_service.py
+      "
+
