@@ -1,114 +1,144 @@
-# wavrecordplay — Custom Brick
+# VENTUNO Q — WAV Recorder & Player with WebUI
 
-`wavrecordplay` is a custom Arduino App Lab Brick for recording and playing WAV audio on the **Arduino VENTUNO Q**. It uses Linux audio facilities on the MPU; this version does **not** require an MCU sketch or Modulino hardware.
+A simple audio recording and playback application for the **Arduino VENTUNO Q**, built with **Arduino App Lab**.
+
+The application runs entirely on the **Linux MPU**: **no MCU sketch, RouterBridge communication, or Modulino module is required**.
+
+It demonstrates how to combine an App Lab **custom Python brick**, a small ALSA-backed audio service, and a browser-based **WebUI**.
 
 ## Features
 
-- Start and stop microphone recording from the application.
-- Play the most recent WAV recording and stop playback.
-- Adjust the ALSA `Headphone` playback control.
-- Query the current audio mode, playback/recording activity, volume and recording availability.
-- Reuse the audio functions from Python applications through the `WavRecorder` class.
+- Record audio to a WAV file from the VENTUNO Q audio input.
+- Stop recording and finalize the WAV file.
+- Play the latest recording through the configured audio output.
+- Stop recording or playback from the WebUI.
+- Adjust the `Headphone` mixer level with a slider (raw ALSA values **0–31**).
+- Display the current state (`idle`, `recording`, or `playing`) and whether a recording is available.
+- Refresh status automatically while the WebUI is open.
 
-**Note:** Each new recording overwrites the previous `recording.wav` file.
+**Note:** Each new recording replaces the previous `recording.wav` file. Recording continues until stopped; there is no fixed duration in the current implementation.
 
-## Architecture
+## Tested configuration
 
-The Brick consists of a Python interface and a dedicated audio service:
+- Board: **Arduino VENTUNO Q**
+- Operating system: **Ubuntu 24.04 LTS** on the VENTUNO Q
+- Application environment: **Arduino App Lab**
+- Audio backend: **ALSA**, using `arecord`, `aplay`, and `amixer`
+- Application type: **MPU-only** (Python + WebUI + custom brick)
 
-| File | Purpose |
-| --- | --- |
-| `__init__.py` | Defines `WavRecorder`, which sends HTTP requests to the audio service. |
-| `wav_service.py` | Provides the audio endpoints and controls `arecord`, `aplay` and `amixer`. |
-| `brick_config.yaml` | Declares the Brick identity (`wavrecordplay`). |
-| `brick_compose.yaml` | Starts the `player` container with access to `/dev/snd` and installs `python3` and `alsa-utils`. |
-
-The default service address in `WavRecorder` is `http://player:9000`.
+The audio device identifiers below match the author's tested configuration. They may need adjustment on other systems or after changes to the ALSA device order.
 
 ## Audio configuration
 
-The following values are defined in `wav_service.py`:
-
-| Setting | Value |
-| --- | --- |
-| Capture device | `plughw:0,1` |
-| Playback device | `plughw:0,0` |
-| Recording format | WAV, signed 16-bit little-endian (`S16_LE`) |
-| Sample rate | 44,100 Hz |
-| Recording channels | 1 (mono) |
-| ALSA sound card for volume | `0` |
-| Mixer control | `Headphone` |
-| Recording file | `recording.wav`, stored in the Brick directory |
-
-The service uses `arecord` for capture, `aplay` for playback, and `amixer` for volume. Device indices and mixer names are specific to the tested configuration and may need adjustment on another system.
-
-The service accepts an integer volume value from **0 to 31**. The Brick's `set_volume()` method accepts values from 0 to 100, but the service clamps them to 31; consequently, the effective mixer setting is limited to 0–31. This is the behavior of the supplied source code, not a percentage conversion.
-
-## Using the Brick
-
-Import `WavRecorder` in your App Lab Python application:
+The audio service is implemented in `bricks/wavrecordplay/wav_service.py` and currently uses:
 
 ```python
-from arduino.app_utils import App
-from wavrecordplay import WavRecorder
-
-recorder = WavRecorder()
-
-# Example calls (normally triggered by your WebUI/API handlers):
-status = recorder.status()
-result = recorder.record()
-# Later, after recording has started:
-result = recorder.stop_record()
-result = recorder.play()
-
-App.run()
+RECORD_DEVICE = "plughw:0,1"
+PLAY_DEVICE = "plughw:0,0"
+RECORD_RATE = "44100"
+RECORD_CHANNELS = "1"
+VOLUME_CARD = "0"
+VOLUME_CONTROL = "Headphone"
 ```
 
-`record()` starts a recording that continues until stopped. To stop either recording or playback, use `stop()`; `stop_record()` is specifically for an active recording.
+Recordings are **16-bit PCM, mono, 44.1 kHz**, stored as WAV.
 
-`WavRecorder` is a regular Python class in this project. **It is not decorated with `@brick`** and does not implement the generated Greeter example's `start()`/`loop()` lifecycle. The application imports and instantiates it directly.
+The volume slider uses the mixer’s **raw range of 0–31**, not a percentage scale. The initial value is read from ALSA when the audio service starts.
 
-### Public Python methods
+To inspect the available devices and mixer controls on your board:
 
-| Method | Description |
+```bash
+cat /proc/asound/cards
+arecord -l
+aplay -l
+amixer -c 0 sget Headphone
+```
+
+If your devices differ, edit the constants in `wav_service.py` before starting the application.
+
+## Project structure
+
+```text
+ventuno-q-wav-brick-webui/
+├── app.yaml
+├── assets/
+│   └── index.html                 # WebUI (HTML / JavaScript)
+├── bricks/
+│   └── wavrecordplay/
+│       ├── __init__.py            # Python interface to the audio service
+│       ├── brick_config.yaml
+│       ├── brick_compose.yaml     # Player service container
+│       └── wav_service.py         # ALSA recording/playback HTTP service
+├── python/
+│   └── main.py                    # WebUI API registration and App Lab entry point
+└── LICENSE
+```
+
+The application may also create `bricks/wavrecordplay/recording.wav` at runtime.
+
+## Getting started
+
+1. Copy or clone this project to your VENTUNO Q.
+2. Open the project in **Arduino App Lab**.
+3. Check that the configured ALSA capture, playback, and mixer devices match your board.
+4. Start the application in App Lab and wait for the `main` and `player` services to start.
+5. Open the application's **WebUI** from App Lab.
+6. Use **Enregistrer** to start recording, **Arrêter l'enregistrement** to finish, and **Lire** to play the resulting WAV file.
+
+The **Stop** button stops either recording or playback. The volume slider adjusts the configured `Headphone` mixer level.
+
+### First start
+
+The `player` container is based on `debian:bookworm-slim`. Its startup command installs `python3` and `alsa-utils` using APT, so the first start requires access to the relevant Debian package repositories and may take longer.
+
+## How it works
+
+```text
+Browser / WebUI
+      |
+      | GET /api/...
+      v
+Arduino App Lab (python/main.py)
+      |
+      v
+WavRecorder custom brick
+      |
+      | HTTP requests to player:9000
+      v
+Audio service (wav_service.py)
+      |
+      +--> arecord --> recording.wav
+      +--> aplay   <-- recording.wav
+      +--> amixer  --> Headphone volume
+```
+
+The WebUI communicates with Python endpoints exposed through App Lab. The custom brick forwards requests to a separate audio service, which manages the ALSA command-line tools.
+
+### WebUI endpoints
+
+| Endpoint | Purpose |
 | --- | --- |
-| `record()` | Start recording, replacing any previous WAV file. |
-| `stop_record()` | Stop the current recording and finalize the WAV file. |
-| `play()` | Play the saved WAV file. |
-| `stop()` | Stop recording or playback. |
-| `set_volume(value)` | Request a volume change. |
-| `status()` | Refresh and return the current service state. |
+| `GET /api/record` | Start recording |
+| `GET /api/stop_record` | Stop recording and finalize the WAV |
+| `GET /api/play` | Play the latest recording |
+| `GET /api/stop` | Stop recording or playback |
+| `GET /api/volume?value=16` | Set raw mixer volume (0–31) |
+| `GET /api/status` | Get mode, volume, running state, and recording availability |
 
-The methods return dictionaries with an `ok` field and additional state or error details. `status()` returns `mode`, `volume`, and `has_recording`, with the full service response in `raw`.
+These endpoints are intended for the local App Lab WebUI. The current implementation uses GET requests for actions that change state.
 
-## Audio service endpoints
+## Current limitations
 
-The `player` container exposes the following internal HTTP endpoints:
+- Only one recording file is managed; starting a new recording overwrites it.
+- The application does not include a recording library or download button.
+- Audio device names and mixer settings are currently configured in source code.
+- The player service starts an HTTP server bound to `0.0.0.0:9000` inside its container; it is intended for the local application environment, not as a hardened public-facing service.
+- The project does **not** use the VENTUNO Q MCU, Arduino RouterBridge, or Modulino Buttons.
 
-| Request | Purpose |
-| --- | --- |
-| `GET /record` | Start recording. |
-| `GET /stop_record` | Stop recording. |
-| `GET /play` | Start playback. |
-| `GET /stop` | Stop recording or playback. |
-| `GET /volume?value=16` | Set the ALSA Headphone mixer value. |
-| `GET /status` | Get mode, running state, volume and recording availability. |
+## Notes
 
-These are **internal service endpoints**. The main application in `python/main.py` separately exposes WebUI routes under `/api/`.
+This is an educational App Lab project focused on integrating a custom brick with Linux audio services and a WebUI. It is separate from the author's MCU/Modulino-based experiments.
 
-## Limitations
+## License
 
-- Only one recording file is managed; new recordings replace it.
-- Recording is mono, even if the hardware supports additional channels.
-- Audio device identifiers and mixer control are currently hard-coded.
-- The service uses HTTP GET requests for actions that change state.
-- The supplied `brick_compose.yaml` installs its dependencies when the container starts.
-- This Brick is part of the VENTUNO Q App Lab project and has not been packaged as a standalone distributable library.
-
-## Future development
-
-A later version of the **application** is planned to integrate the STM32 MCU and Arduino Modulino Buttons through Arduino RouterBridge, allowing physical control of recording and playback. The current MPU-only implementation provides the working audio foundation.
-
-## Related files
-
-For the complete application, including the WebUI and project setup, see the repository's root `README.md`.
+See the included [`LICENSE`](LICENSE) file.
