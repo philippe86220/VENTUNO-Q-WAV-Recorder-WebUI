@@ -1,6 +1,6 @@
 # wavrecordplay — Custom Brick
 
-`wavrecordplay` is a custom Arduino App Lab Brick for recording and playing WAV audio on the **Arduino VENTUNO Q**. It uses Linux audio facilities on the MPU; this version does **not** require an MCU sketch or Modulino hardware.
+`wavrecordplay` is a custom Arduino App Lab Brick for recording and playing WAV audio on the **Arduino VENTUNO Q**. It uses Linux audio facilities on the MPU.
 
 ## Features
 
