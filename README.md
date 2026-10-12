@@ -129,7 +129,7 @@ The WebUI communicates with Python endpoints exposed through App Lab.
 | `GET /api/stop_record` | Stop recording and finalize the WAV |
 | `GET /api/play` | Play the latest recording |
 | `GET /api/stop` | Stop recording or playback |
-| `GET /api/volume?value=16` | Set raw mixer volume (0–31) |
+| `GET /api/volume?value=<value>` | Set raw mixer volume (0–31) |
 | `GET /api/status` | Get mode, volume, running state, and recording availability |
 
 These endpoints are intended for the local App Lab WebUI. The current implementation uses GET requests for actions that change state.
