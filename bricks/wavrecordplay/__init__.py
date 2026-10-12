@@ -1,5 +1,4 @@
 import json
-import time
 from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 
@@ -109,8 +108,5 @@ class WavRecorder:
             "raw": result
         }
 
-    def run(self):
-        print("[WavRecorder brick] App running")
-        while True:
-            time.sleep(1)
+    
 
