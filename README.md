@@ -21,7 +21,7 @@ It demonstrates how to combine an App Lab **custom Python brick**, a small ALSA-
 ## Tested configuration
 
 - Board: **Arduino VENTUNO Q**
-- Audio hardware: **Arduino VENTUNO Q Media Carrier**, using its microphone input and `Headphone` audio output.
+- Audio hardware: **Arduino UNO Media Carrier**, using its microphone input and `Headphone` audio output.
 - Operating system: **Ubuntu 24.04 LTS** on the VENTUNO Q
 - Application environment: **Arduino App Lab**
 - Audio backend: **ALSA**, using `arecord`, `aplay`, and `amixer`
