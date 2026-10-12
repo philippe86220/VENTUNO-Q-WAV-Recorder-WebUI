@@ -191,7 +191,7 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         if path == "volume":
-            value = query.get("value", ["50"])[0]
+            value = query.get("value", ["16"])[0]
             self._send_json(set_volume(value))
             return
 
