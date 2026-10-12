@@ -134,7 +134,7 @@ These endpoints are intended for the local App Lab WebUI. The current implementa
 ## Current limitations
 
 - Only one recording file is managed; starting a new recording overwrites it.
-- The application does not include a recording library or download button.
+- The application does not include a download button.
 - Audio device names and mixer settings are currently configured in source code.
 
 ## Notes
