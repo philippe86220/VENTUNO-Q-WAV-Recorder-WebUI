@@ -101,7 +101,7 @@ The `player` container handles these internal HTTP requests in `wav_service.py`:
 | `GET /stop_record` | Stop the active recording. |
 | `GET /play` | Start WAV playback. |
 | `GET /stop` | Stop recording or playback. |
-| `GET /volume?value=16` | Set the ALSA `Headphone` mixer level. |
+| `GET /volume?value=<value>` | Set the ALSA `Headphone` mixer level (0–31). |
 | `GET /status` | Retrieve the current audio state and recording availability. |
 
 These are **internal service endpoints**, distinct from the `/api/` routes exposed by the application's `python/main.py` for its WebUI.
