@@ -22,7 +22,7 @@ def api_stop():
     return recorder.stop()
 
 
-def api_volume(value="50"):
+def api_volume(value="16"):
     return recorder.set_volume(value)
 
 
