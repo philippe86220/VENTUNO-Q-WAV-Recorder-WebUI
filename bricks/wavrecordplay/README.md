@@ -87,7 +87,7 @@ App.run()
 | `set_volume(value)` | Set the `Headphone` mixer level (0–31). |
 | `status()` | Refresh the current service state. |
 
-These methods return dictionaries indicating success or failure. The class also defines `run()`, a blocking loop not used by the supplied application's `python/main.py`.
+These methods return dictionaries indicating success or failure. 
 
 The `status()` result includes `ok`, `mode`, `volume`, `has_recording` and the complete service response under `raw`. The service response also includes `running`.
 
