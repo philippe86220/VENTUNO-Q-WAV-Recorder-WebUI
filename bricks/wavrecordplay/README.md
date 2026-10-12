@@ -42,7 +42,7 @@ The following settings are defined in `wav_service.py`:
 
 The service uses `arecord` to record, `aplay` to play audio and `amixer` to read or set the volume. Device numbers and mixer controls may differ on other systems.
 
-The volume control uses **integer mixer values from 0 to 31**, not percentages. The `WavRecorder.set_volume()` method and the audio service both clamp values to this range in the revised version of `__init__.py`.
+The volume control uses **integer mixer values from 0 to 31**, not percentages. The `WavRecorder.set_volume()` method and the audio service both clamp values to this range. 
 
 To inspect your audio configuration:
 
