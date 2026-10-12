@@ -51,7 +51,7 @@ To inspect the available devices and mixer controls on your board:
 cat /proc/asound/cards
 arecord -l
 aplay -l
-amixer -c 0 sget Headphone
+amixer -c 0 get Headphone
 ```
 
 If your devices differ, edit the constants in `wav_service.py` before starting the application.
