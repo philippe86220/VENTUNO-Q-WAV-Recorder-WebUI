@@ -21,6 +21,7 @@ It demonstrates how to combine an App Lab **custom Python brick**, a small ALSA-
 ## Tested configuration
 
 - Board: **Arduino VENTUNO Q**
+- Audio hardware: **Arduino VENTUNO Q Media Carrier**, using its microphone input and `Headphone` audio output.
 - Operating system: **Ubuntu 24.04 LTS** on the VENTUNO Q
 - Application environment: **Arduino App Lab**
 - Audio backend: **ALSA**, using `arecord`, `aplay`, and `amixer`
@@ -29,6 +30,10 @@ It demonstrates how to combine an App Lab **custom Python brick**, a small ALSA-
 The audio device identifiers below match the author's tested configuration. They may need adjustment on other systems or after changes to the ALSA device order.
 
 ## Audio configuration
+
+The application uses the **VENTUNO Q Media Carrier** for audio capture and playback. The microphone is connected to the Media Carrier's audio input, and playback uses its `Headphone` output.
+
+The ALSA device identifiers and mixer control listed below correspond to this tested hardware configuration.
 
 The audio service is implemented in `bricks/wavrecordplay/wav_service.py` and currently uses:
 
