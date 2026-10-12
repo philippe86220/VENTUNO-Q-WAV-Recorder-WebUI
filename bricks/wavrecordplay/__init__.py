@@ -8,7 +8,7 @@ class WavRecorder:
     def __init__(self, host="http://player:9000"):
         self.host = host
         self.mode = "idle"  # idle | recording | playing
-        self.volume = 50
+        self.volume = 16
 
     def _get_json(self, path):
         try:
@@ -78,9 +78,9 @@ class WavRecorder:
         try:
             value = int(value)
         except Exception:
-            value = 50
+            value = 16
 
-        value = max(0, min(100, value))
+        value = max(0, min(31, value))
 
         result = self._get_json("/volume?value=" + str(value))
 
