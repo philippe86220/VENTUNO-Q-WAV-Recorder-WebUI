@@ -87,7 +87,7 @@ The application may also create `bricks/wavrecordplay/recording.wav` at runtime.
    Open the provided URL in your web browser to access the application's controls.
 6. Use **Enregistrer** to start recording, **Arrêter l'enregistrement** to finish, and **Lire** to play the resulting WAV file.
 
-The **Stop** button stops either recording or playback. The volume slider adjusts the configured `Headphone` mixer level.
+The **Stop** button stops playback. The **Arrêter l'enregistrement** button stops recording. The volume slider adjusts the configured `Headphone` mixer level.
 
 ### First start
 
