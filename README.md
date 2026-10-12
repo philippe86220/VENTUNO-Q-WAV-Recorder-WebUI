@@ -33,8 +33,6 @@ The audio device identifiers below match the author's tested configuration. They
 
 The application uses the **VENTUNO Q Media Carrier** for audio capture and playback. The microphone is connected to the Media Carrier's audio input, and playback uses its `Headphone` output.
 
-The ALSA device identifiers and mixer control listed below correspond to this tested hardware configuration.
-
 The audio service is implemented in `bricks/wavrecordplay/wav_service.py` and currently uses:
 
 ```python
