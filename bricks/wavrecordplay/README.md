@@ -108,7 +108,7 @@ These are **internal service endpoints**, distinct from the `/api/` routes expos
 
 ## Limitations
 
-- Recording uses mono audio, even if the hardware supports more channels.
+- Recording is currently configured for mono audio (one channel). Stereo recording has not been tested.
 - ALSA device identifiers and the mixer control are configured directly in `wav_service.py`.
 - The service uses HTTP GET requests for operations that change state.
 - The supplied container configuration installs dependencies when the container starts; the first start may require access to package repositories.
