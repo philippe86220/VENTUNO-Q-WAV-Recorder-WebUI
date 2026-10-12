@@ -82,7 +82,10 @@ The application may also create `bricks/wavrecordplay/recording.wav` at runtime.
 2. Open the project in **Arduino App Lab**.
 3. Check that the configured ALSA capture, playback, and mixer devices match your board.
 4. Start the application in App Lab and wait for the `main` and `player` services to start.
-5. Open the application's **WebUI** from App Lab.
+5. The application's **WebUI** normally opens automatically when the application starts in Arduino App Lab.
+   If it does not open, check the **Python logs** in App Lab. The WebUI URL is displayed there.
+
+Open the provided URL in your web browser to access the application's controls.
 6. Use **Enregistrer** to start recording, **Arrêter l'enregistrement** to finish, and **Lire** to play the resulting WAV file.
 
 The **Stop** button stops either recording or playback. The volume slider adjusts the configured `Headphone` mixer level.
